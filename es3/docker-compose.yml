@@ -7,7 +7,8 @@ services:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "network.publish_host=es1.uggla.fr"
+      - "network.publish_host=es3.uggla.fr"
+      - "discovery.zen.ping.unicast.hosts=es1.uggla.fr"
       - "discovery.zen.minimum_master_nodes=3"
     ulimits:
       memlock:
