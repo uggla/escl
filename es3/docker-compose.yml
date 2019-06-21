@@ -1,0 +1,56 @@
+version: '3.7'
+services:
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1
+    container_name: es
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "network.publish_host=es3.uggla.fr"
+      - "discovery.zen.ping.unicast.hosts=es1.uggla.fr"
+      - "discovery.zen.minimum_master_nodes=3"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elk
+  kiba:
+    image: docker.elastic.co/kibana/kibana-oss:6.4.1
+    container_name: kiba
+    environment:
+      ELASTICSEARCH_URL: http://178.128.138.150:9200/
+    ports:
+      - 8080:5601
+    volumes:
+      - kdata:/usr/share/kibana/data
+    networks:
+      - elk
+    depends_on:
+      - es
+  ls:
+    image: docker.elastic.co/logstash/logstash-oss:6.4.1
+    container_name: ls
+    environment:
+      ELASTICSEARCH_HOSTS: http://178.128.138.150:9200/
+    ports:
+      - 5000:5000
+      - 9600:9600
+    volumes:
+      - lsdata:/usr/share/logstash/data
+    networks:
+      - elk
+    depends_on:
+      - es
+volumes:
+  esdata:
+  kdata:
+  lsdata:
+networks:
+  elk:
