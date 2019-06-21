@@ -38,7 +38,7 @@ services:
     image: docker.elastic.co/logstash/logstash-oss:6.4.1
     container_name: ls
     environment:
-      ELASTICSEARCH_HOSTS: http://es:9200/
+      ELASTICSEARCH_HOSTS: http://178.128.138.150:9200/
     ports:
       - 5000:5000
       - 9600:9600
