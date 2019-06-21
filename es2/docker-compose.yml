@@ -19,5 +19,38 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    networks:
+      - elk
+  kiba:
+    image: docker.elastic.co/kibana/kibana-oss:6.4.1
+    container_name: kiba
+    environment:
+      ELASTICSEARCH_URL: http://178.128.138.150:9200/
+    ports:
+      - 8080:5601
+    volumes:
+      - kdata:/usr/share/kibana/data
+    networks:
+      - elk
+    depends_on:
+      - es
+  ls:
+    image: docker.elastic.co/logstash/logstash-oss:6.4.1
+    container_name: ls
+    environment:
+      ELASTICSEARCH_HOSTS: http://es:9200/
+    ports:
+      - 5000:5000
+      - 9600:9600
+    volumes:
+      - lsdata:/usr/share/logstash/data
+    networks:
+      - elk
+    depends_on:
+      - es
 volumes:
   esdata:
+  kdata:
+  lsdata:
+networks:
+  elk:
